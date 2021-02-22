@@ -6,8 +6,8 @@ db:
   drivername: "mysql"
   hostname: "127.0.0.1"
   port: "3306"
-  dbuser: "ksc"
-  dbpwd: "ksc"
+  dbuser: "root"
+  dbpwd: "RraDEZgfhY"    ##RraDEZgfhY
   dbname: "ksc"
   charset: "utf8"
   lifetime: 5

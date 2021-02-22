@@ -1,6 +1,8 @@
-package data
+package entity
 
-const TABLENAME = "articles"
+const (
+	TABLENAME = "articles"
+)
 
 //定义模型
 type Article struct {
@@ -23,4 +25,3 @@ type Article struct {
 func (Article) TableName() string{
 	return TABLENAME
 }
-
