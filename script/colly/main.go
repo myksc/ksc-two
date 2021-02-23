@@ -6,6 +6,7 @@ import (
 	"github.com/gocolly/colly"
 	"ksc/entity"
 	"math/rand"
+	"strconv"
 	"time"
 	"github.com/jinzhu/gorm"
 	_ "github.com/go-sql-driver/mysql"
@@ -74,7 +75,7 @@ func indexC(index *colly.Collector, info *colly.Collector) *colly.Collector {
 					if itemName != "" && itemHref != ""{
 						conUrl := fmt.Sprintf("%s%s", URL, itemHref)
 						ctx := colly.NewContext()
-						ctx.Put("csign", csign)
+						ctx.Put("csign", strconv.Itoa(csign))
 						ctx.Put("tagname", cName)
 						info.Request("GET", conUrl, nil, ctx, nil)
 					}
