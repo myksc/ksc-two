@@ -4,19 +4,24 @@ import (
 	"fmt"
 	"github.com/gocolly/colly"
 	"ksc/entity"
-	"ksc/model"
 	"math/rand"
 	"time"
+	"github.com/jinzhu/gorm"
 )
 
 const URL = "http://www.enjoybar.com"
 
 var (
-	article *model.Article
+	db *gorm.DB
 )
 
 func init(){
-
+	connstr := "root:RraDEZgfhY@@tcp(127.0.0.1:3306)/ksc?charset=utf8&parseTime=true"
+	driver, err := gorm.Open("mysql", connstr)
+	if err != nil {
+		panic(err)
+	}
+	db = driver
 }
 
 func main(){
@@ -120,6 +125,7 @@ func infoC(info *colly.Collector) *colly.Collector{
 	return info
 }
 
+// insertArticle 插入article表
 func insertArticle(name string, sign int, content string, imgs string, tagname string){
 	randNum := rand.Intn(100)
 	currtime := int(time.Now().Unix())
@@ -135,9 +141,11 @@ func insertArticle(name string, sign int, content string, imgs string, tagname s
 		TagId : sign,
 		TagName: tagname,
 	}
-	article.Insert(&data)
+	r := db.Create(&data)
+	fmt.Println(r)
 }
 
-func insertTags(){
+// insertTag
+func insertTag(tagname string){
 
 }

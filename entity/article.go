@@ -1,10 +1,8 @@
 package entity
 
-const tableName = "articles"
-
 //定义模型
 type Article struct {
-	ID          int			`gorm:"column:id" json:"id"`
+	ID          int			`gorm:"column:id;primary_key" json:"id"`
 	Name 		string		`gorm:"column:name" json:"name"`
 	Like		int			`gorm:"column:like;default:0" json:"like"`
 	Collection  int			`gorm:"column:collection;default:0" json:"collection"`
@@ -19,5 +17,5 @@ type Article struct {
 
 //表名
 func (Article) TableName() string{
-	return tableName
+	return "articles"
 }
