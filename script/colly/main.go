@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/gocolly/colly"
 	"ksc/entity"
@@ -30,18 +31,16 @@ func main(){
 
 
 	//爬虫
-	//agent := colly.UserAgent("Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36")
-	//depth := colly.MaxDepth(1)
-	//index := colly.NewCollector(agent, depth)
-	//con := infoC(index.Clone())
-	//index = indexC(index, con)
-	//err := index.Visit(URL)
-	//if err != nil {
-	//	panic(err)
-	//}
+	agent := colly.UserAgent("Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36")
+	depth := colly.MaxDepth(1)
+	index := colly.NewCollector(agent, depth)
+	con := infoC(index.Clone())
+	index = indexC(index, con)
+	err := index.Visit(URL)
+	if err != nil {
+		panic(err)
+	}
 
-	//insertArticle("this is title", 1 ,"this is content", "images", "标签")
-	insertTag("haha", 2)
 	fmt.Println("End")
 }
 
@@ -64,13 +63,20 @@ func indexC(index *colly.Collector, info *colly.Collector) *colly.Collector {
 			cName := cv.ChildText("dt[class='title'] h3 span a")
 			if cName != "" {
 				csign++
+
+				//todo 标签（插入sql）
+				tagMsg := fmt.Sprintf("捕获标签成功：sign:%d, tagName:%s", csign, cName)
+				fmt.Println(tagMsg)
+
 				cv.ForEach("li", func(itemI int, itemV *colly.HTMLElement) {
 					itemHref := itemV.ChildAttr("a[class='meiwen']", "href")
 					itemName := itemV.ChildText("a[class='meiwen']")
 					if itemName != "" && itemHref != ""{
-						//fmt.Println(itemHref, itemName, csign)
 						conUrl := fmt.Sprintf("%s%s", URL, itemHref)
-						info.Request("GET", conUrl, nil, nil, nil)
+						ctx := colly.NewContext()
+						ctx.Put("csign", csign)
+						ctx.Put("tagname", cName)
+						info.Request("GET", conUrl, nil, ctx, nil)
 					}
 				})
 			}
@@ -82,6 +88,7 @@ func indexC(index *colly.Collector, info *colly.Collector) *colly.Collector {
 
 // infoC 内容爬取
 func infoC(info *colly.Collector) *colly.Collector{
+
 	//限速
 	info.Limit(&colly.LimitRule{
 		DomainRegexp: "",
@@ -103,6 +110,9 @@ func infoC(info *colly.Collector) *colly.Collector{
 
 	//(内容)
 	info.OnHTML("div[class='container']", func(art *colly.HTMLElement){
+
+		tagName  := art.Request.Ctx.Get("tagname")
+		tagSign  := art.Request.Ctx.Get("csign")
 		conDate  := art.ChildText("li[class='pubdate'] span")
 		conClick := art.ChildText("li[class='click'] span")
 		conArtic := art.ChildText("div[class='text'] p")
@@ -119,7 +129,15 @@ func infoC(info *colly.Collector) *colly.Collector{
 			}
 		})
 
-		fmt.Println(conTitle, conClick, conImages, conArtic, conDate)
+		imagesStr, err := json.Marshal(conImages)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		//todo 捕捉文章成功
+		conMsg := fmt.Sprintf("捕捉文章：标题：%s, 标签：%d, 内容: %s, 图片：%s, 标签名：%s", conTitle, tagSign, conArtic, imagesStr, tagName)
+		fmt.Println(conMsg)
 	})
 
 	return info
@@ -146,7 +164,7 @@ func insertArticle(name string, sign int, content string, imgs string, tagname s
 	if err := db.Create(&data).Error; err != nil {
 		panic(err)
 	}else{
-		msg := fmt.Sprintf("插入数据：%s", name)
+		msg := fmt.Sprintf("插入文章：%s", name)
 		fmt.Println(msg)
 	}
 }
@@ -161,6 +179,7 @@ func insertTag(tagname string, tagSign int){
 	if err := db.Create(&data).Error; err != nil {
 		panic(err)
 	}else{
-		
+		msg := fmt.Sprintf("插入标签：%s", tagname)
+		fmt.Println(msg)
 	}
 }
