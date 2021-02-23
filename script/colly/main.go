@@ -7,6 +7,7 @@ import (
 	"math/rand"
 	"time"
 	"github.com/jinzhu/gorm"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 const URL = "http://www.enjoybar.com"
@@ -16,7 +17,7 @@ var (
 )
 
 func init(){
-	connstr := "root:RraDEZgfhY@@tcp(127.0.0.1:3306)/ksc?charset=utf8&parseTime=true"
+	connstr := "root:RraDEZgfhY@tcp(127.0.0.1:3306)/ksc?charset=utf8&parseTime=true"
 	driver, err := gorm.Open("mysql", connstr)
 	if err != nil {
 		panic(err)
@@ -29,19 +30,18 @@ func main(){
 
 
 	//爬虫
-	agent := colly.UserAgent("Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36")
-	depth := colly.MaxDepth(1)
-	index := colly.NewCollector(agent, depth)
+	//agent := colly.UserAgent("Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36")
+	//depth := colly.MaxDepth(1)
+	//index := colly.NewCollector(agent, depth)
+	//con := infoC(index.Clone())
+	//index = indexC(index, con)
+	//err := index.Visit(URL)
+	//if err != nil {
+	//	panic(err)
+	//}
 
-	//con := index.Clone()
-	con := infoC(index.Clone())
-
-	index = indexC(index, con)
-	err := index.Visit(URL)
-	if err != nil {
-		panic(err)
-	}
-
+	//insertArticle("this is title", 1 ,"this is content", "images", "标签")
+	insertTag("haha", 2)
 	fmt.Println("End")
 }
 
@@ -141,11 +141,26 @@ func insertArticle(name string, sign int, content string, imgs string, tagname s
 		TagId : sign,
 		TagName: tagname,
 	}
-	r := db.Create(&data)
-	fmt.Println(r)
+
+	//创建数据
+	if err := db.Create(&data).Error; err != nil {
+		panic(err)
+	}else{
+		msg := fmt.Sprintf("插入数据：%s", name)
+		fmt.Println(msg)
+	}
 }
 
-// insertTag
-func insertTag(tagname string){
+// insertTag 插入tag表
+func insertTag(tagname string, tagSign int){
+	data := entity.Tag{
+		ID: tagSign,
+		TagName: tagname,
+	}
 
+	if err := db.Create(&data).Error; err != nil {
+		panic(err)
+	}else{
+		
+	}
 }
