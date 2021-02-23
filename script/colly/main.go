@@ -3,10 +3,21 @@ package main
 import (
 	"fmt"
 	"github.com/gocolly/colly"
+	"ksc/entity"
+	"ksc/model"
+	"math/rand"
 	"time"
 )
 
 const URL = "http://www.enjoybar.com"
+
+var (
+	article *model.Article
+)
+
+func init(){
+
+}
 
 func main(){
 	fmt.Println("start")
@@ -25,9 +36,6 @@ func main(){
 	if err != nil {
 		panic(err)
 	}
-
-	//数据库初始化
-
 
 	fmt.Println("End")
 }
@@ -112,8 +120,22 @@ func infoC(info *colly.Collector) *colly.Collector{
 	return info
 }
 
-func insertArticle(){
-
+func insertArticle(name string, sign int, content string, imgs string, tagname string){
+	randNum := rand.Intn(100)
+	currtime := int(time.Now().Unix())
+	data := entity.Article{
+		Name : name,
+		Like : randNum,
+		Collection : randNum,
+		CreateTime : currtime,
+		UpdateTime : currtime,
+		Status : 1,
+		Content: content,
+		Imgs : imgs,
+		TagId : sign,
+		TagName: tagname,
+	}
+	article.Insert(&data)
 }
 
 func insertTags(){
