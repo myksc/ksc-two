@@ -113,8 +113,8 @@ func infoC(info *colly.Collector) *colly.Collector{
 
 		tagName  := art.Request.Ctx.Get("tagname")
 		tagSign  := art.Request.Ctx.Get("csign")
-		conDate  := art.ChildText("li[class='pubdate'] span")
-		conClick := art.ChildText("li[class='click'] span")
+		//conDate  := art.ChildText("li[class='pubdate'] span")
+		//conClick := art.ChildText("li[class='click'] span")
 		conArtic := art.ChildText("div[class='text'] p")
 		conTitle := art.ChildText("div[class='article'] h1")
 
