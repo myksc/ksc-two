@@ -3,25 +3,16 @@ package main
 import (
 	"fmt"
 	"github.com/gocolly/colly"
-	"github.com/spf13/viper"
-	"ksc/common"
-	"ksc/util"
-	"os"
 	"time"
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/jinzhu/gorm"
 )
 
 const URL = "http://www.enjoybar.com"
 
-var db *gorm.DB
-
 func main(){
 	fmt.Println("start")
 
-	//初始化数据库
-	initDb()
 
+	//爬虫
 	agent := colly.UserAgent("Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36")
 	depth := colly.MaxDepth(1)
 	index := colly.NewCollector(agent, depth)
@@ -34,6 +25,9 @@ func main(){
 	if err != nil {
 		panic(err)
 	}
+
+	//数据库初始化
+
 
 	fmt.Println("End")
 }
@@ -118,24 +112,10 @@ func infoC(info *colly.Collector) *colly.Collector{
 	return info
 }
 
-// initDb 初始化数据库
-func initDb(){
-	currDir, _ := os.Getwd()
-	common.InitViper(util.StringBuilder(currDir, "/../../"))
-	drivername := viper.GetString("db.drivername")
-	args := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s&parseTime=true",
-		viper.GetString("db.dbuser"),
-		viper.GetString("db.dbpwd"),
-		viper.GetString("db.hostname"),
-		viper.GetString("db.port"),
-		viper.GetString("db.dbname"),
-		viper.GetString("db.charset"),
-	)
-	instance, err := gorm.Open(drivername, args)
-	if err != nil {
-		panic(err)
-	}
+func insertArticle(){
 
-	db = instance
 }
 
+func insertTags(){
+
+}

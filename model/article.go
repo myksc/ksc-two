@@ -1,17 +1,19 @@
 package model
 
-import "ksc/entity"
-
-const (
-	SIZE = 20
+import (
+	"github.com/jinzhu/gorm"
+	"ksc/common"
+	"ksc/entity"
 )
 
 type Article struct {
-	Model
+	Db *gorm.DB
 }
 
-func (a *Article) List(page int) (data *[]entity.Article){
-	maps := map[string]string{"status":"1"}
-	a.Model.SearchByPage(page, SIZE, maps, &data)
+// List
+func (a *Article) List(page int, limit int) (data []entity.Article) {
+	a.Db = common.GetDb()
+	offset := page * limit
+	a.Db.Where("status = ?", 0).Order("update_time DESC").Offset(offset).Limit(limit).Find(&data)
 	return data
 }
