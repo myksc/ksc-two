@@ -3,13 +3,13 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/gocolly/colly"
+	"github.com/jinzhu/gorm"
 	"ksc/entity"
 	"math/rand"
 	"strconv"
 	"time"
-	"github.com/jinzhu/gorm"
-	_ "github.com/go-sql-driver/mysql"
 )
 
 const URL = "http://www.enjoybar.com"
@@ -29,7 +29,6 @@ func init(){
 
 func main(){
 	fmt.Println("start")
-
 
 	//爬虫
 	agent := colly.UserAgent("Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36")
@@ -120,14 +119,13 @@ func infoC(info *colly.Collector) *colly.Collector{
 		conArtic := art.ChildText("div[class='text'] p")
 		conTitle := art.ChildText("div[class='article'] h1")
 
-		var conImages [4]string
-		var conImageInt int = 0
+		//var conImages [4]string
+		var conImages = make([]string, 0)
 
 		art.ForEach("ul[class='picture-list'] li", func(conInt int, conImage *colly.HTMLElement){
 			imageUrl := conImage.ChildAttr("a[class='meiwen'] img", "src")
-			if imageUrl != "" && conImageInt <= 3 {
-				conImages[conImageInt] = imageUrl
-				conImageInt++
+			if imageUrl != "" {
+				conImages = append(conImages, imageUrl)
 			}
 		})
 
