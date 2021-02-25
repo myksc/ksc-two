@@ -150,7 +150,7 @@ func infoC(info *colly.Collector) *colly.Collector{
 
 // insertArticle 插入article表
 func insertArticle(name string, sign int, content string, imgs string, tagname string){
-	randNum := rand.Intn(100)
+	randNum := rand.Intn(100) + 1
 	currtime := int(time.Now().Unix())
 	data := entity.Article{
 		Name : name,
