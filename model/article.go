@@ -15,7 +15,7 @@ type Article struct {
 func (a *Article) List(page int, limit int) (data []entity.Article) {
 	a.Db = common.GetDb()
 	offset := page * limit
-	a.Db.Where("status = ?", 0).Order("update_time DESC").Offset(offset).Limit(limit).Find(&data)
+	a.Db.Where("status = ?", 1).Order("update_time DESC").Offset(offset).Limit(limit).Find(&data)
 	return data
 }
 
