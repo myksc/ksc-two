@@ -8,11 +8,7 @@ import (
 )
 
 func List(c *gin.Context){
-	page, err := strconv.Atoi(c.DefaultQuery("page", "0"))
-	if err != nil {
-		controller.Fail(c, gin.H{}, "error")
-		return
-	}
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "0"))
 	limit, _ := strconv.Atoi(c.DefaultQuery("num", "20"))
 
 	article := new(model.Article)
