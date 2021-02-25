@@ -67,6 +67,7 @@ func indexC(index *colly.Collector, info *colly.Collector) *colly.Collector {
 
 				//todo 标签（插入sql）
 				tagMsg := fmt.Sprintf("捕获标签成功：sign:%d, tagName:%s", csign, cName)
+				insertTag(cName, csign)
 				fmt.Println(tagMsg)
 
 				cv.ForEach("li", func(itemI int, itemV *colly.HTMLElement) {
@@ -130,14 +131,17 @@ func infoC(info *colly.Collector) *colly.Collector{
 			}
 		})
 
-		imagesStr, err := json.Marshal(conImages)
+		imagesByte, err := json.Marshal(conImages)
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
 
 		//todo 捕捉文章成功
-		conMsg := fmt.Sprintf("捕捉文章：标题：%s, 标签：%d, 内容: %s, 图片：%s, 标签名：%s", conTitle, tagSign, conArtic, imagesStr, tagName)
+		intTagSign, _ := strconv.Atoi(tagSign)
+		imagesStr := string(imagesByte[:])
+		conMsg := fmt.Sprintf("捕捉文章：标题：%s, 标签：%d, 内容: %s, 图片：%s, 标签名：%s", conTitle, intTagSign, conArtic, imagesStr, tagName)
+		insertArticle(conTitle, intTagSign, conArtic, imagesStr, tagName)
 		fmt.Println(conMsg)
 	})
 
