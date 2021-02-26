@@ -11,7 +11,7 @@ type Article struct {
 	Db *gorm.DB
 }
 
-// List
+// List 列表
 func (a *Article) List(page int, limit int) (data []entity.Article) {
 	a.Db = common.GetDb()
 	offset := page * limit
