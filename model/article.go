@@ -30,8 +30,6 @@ func (a *Article) List(page int, limit int) (schema []schema.ArticleListRes) {
 		var images []string
 		err := json.Unmarshal([]byte(v.Imgs), &images)
 		fmt.Println(err, images, sourceId, k)
-
-
 		//schema[k].SourceId = sourceId
 		//schema[k].TagName  = v.TagName
 		//schema[k].Name	   = v.Name

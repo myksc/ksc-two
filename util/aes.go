@@ -7,6 +7,7 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/md5"
+	"fmt"
 )
 
 const (
@@ -28,23 +29,25 @@ func unpadding(src []byte) []byte {
 }
 
 // EncryptAES 数据加密
-func EncryptAES(src []byte) []byte {
+func EncryptAES(src []byte) (enstr string) {
 	aesKey := md5.Sum([]byte(KEY))
 	block,_:=aes.NewCipher(aesKey[:])
 	src=padding(src, block.BlockSize())
 	blockmode:=cipher.NewCBCEncrypter(block, aesKey[:])
 	blockmode.CryptBlocks(src, src)
-	return src
+	enstr = fmt.Sprintf("%x\n", src)
+	return enstr
 }
 
 // DecryptAES 数据解密
-func DecryptAES(src []byte,key []byte) []byte {
+func DecryptAES(src []byte) (destr string) {
 	aesKey := md5.Sum([]byte(KEY))
 	block,_:=aes.NewCipher(aesKey[:])
 	blockmode:=cipher.NewCBCDecrypter(block, aesKey[:])
 	blockmode.CryptBlocks(src,src)
 	src=unpadding(src)
-	return src
+	destr = string(src[:])
+	return destr
 }
 
 
