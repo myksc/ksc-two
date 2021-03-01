@@ -9,6 +9,7 @@ import (
 	"ksc/schema"
 	"ksc/util"
 	"strconv"
+	"time"
 )
 
 type Article struct {
@@ -21,10 +22,14 @@ func (a *Article) List(page int, limit int) (schemas []schema.ArticleListRes) {
 	offset := page * limit
 	var data []entity.Article
 	a.Db.Where("status = ?", 1).Order("update_time DESC").Offset(offset).Limit(limit).Find(&data)
+	timeLayout := "2006-01-02 15:04:05"
 	for _, v := range data {
 		//加密sourceId
 		data := util.EncryptAES([]byte(strconv.Itoa(v.ID)))
 		sourceId := string(data[:])
+
+		//创建时间
+		createTime := time.Unix(int64(v.CreateTime), 0).Format(timeLayout)
 
 		//处理图片
 		var images []string
@@ -39,6 +44,7 @@ func (a *Article) List(page int, limit int) (schemas []schema.ArticleListRes) {
 			TagSign: v.TagId,
 			TagName: v.TagName,
 			Images: images,
+			CreateTime: createTime,
 		}
 		schemas = append(schemas, articleSchema)
 	}
