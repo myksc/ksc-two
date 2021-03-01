@@ -16,12 +16,12 @@ type Article struct {
 }
 
 // List 列表
-func (a *Article) List(page int, limit int) (schema []schema.ArticleListRes) {
+func (a *Article) List(page int, limit int) (schemas []schema.ArticleListRes) {
 	a.Db = common.GetDb()
 	offset := page * limit
 	var data []entity.Article
 	a.Db.Where("status = ?", 1).Order("update_time DESC").Offset(offset).Limit(limit).Find(&data)
-	for k, v := range data {
+	for _, v := range data {
 		//加密sourceId
 		data := util.EncryptAES([]byte(strconv.Itoa(v.ID)))
 		sourceId := string(data[:])
@@ -29,13 +29,20 @@ func (a *Article) List(page int, limit int) (schema []schema.ArticleListRes) {
 		//处理图片
 		var images []string
 		err := json.Unmarshal([]byte(v.Imgs), &images)
-		fmt.Println(err, images, sourceId, k)
-		//schema[k].SourceId = sourceId
-		//schema[k].TagName  = v.TagName
-		//schema[k].Name	   = v.Name
-		//schema[k].TagSign  = v.TagId
+		if err != nil {
+			continue
+		}
+
+		articleSchema := schema.ArticleListRes{
+			SourceId: sourceId,
+			Name: v.Name,
+			TagSign: v.TagId,
+			TagName: v.TagName,
+			Images: images,
+		}
+		schemas = append(schemas, articleSchema)
 	}
-	return schema
+	return schemas
 }
 
 // Insert 插入数据
