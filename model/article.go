@@ -51,7 +51,7 @@ func (a *Article) List(page int, limit int) (schemas []schema.ArticleListRes) {
 		}
 		schemas = append(schemas, articleSchema)
 	}
-	return schemas
+	return
 }
 
 // Insert 插入数据
