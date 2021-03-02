@@ -35,7 +35,7 @@ func EncryptAES(src []byte) (enstr string) {
 	src=padding(src, block.BlockSize())
 	blockmode:=cipher.NewCBCEncrypter(block, aesKey[:])
 	blockmode.CryptBlocks(src, src)
-	enstr = fmt.Sprintf("%x\n", src)
+	enstr = fmt.Sprintf("%x", src)
 	return enstr
 }
 

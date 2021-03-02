@@ -10,6 +10,7 @@ import (
 	"ksc/util"
 	"strconv"
 	"time"
+	_ "github.com/google/wire"
 )
 
 const (
@@ -19,6 +20,9 @@ const (
 type Article struct {
 	Db *gorm.DB
 }
+
+//依赖处理
+
 
 // List 列表
 func (a *Article) List(page int, limit int) (schemas []schema.ArticleListRes) {
