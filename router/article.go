@@ -9,6 +9,7 @@ func articleModule(app *gin.Engine) *gin.Engine {
 	us := app.Group("article")
 	{
 		us.GET("/List", article.List)
+		us.GET("/Info", article.Info)
 	}
 	return app
 }

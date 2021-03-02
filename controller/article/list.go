@@ -17,3 +17,10 @@ func List(c *gin.Context){
 		"list":list,
 	}, "success")
 }
+
+func Info(c *gin.Context){
+	sourceId := c.DefaultQuery("sourceId", "")
+	if sourceId == "" {
+		controller.Fail(c, gin.H{}, "参数错误")
+	}
+}

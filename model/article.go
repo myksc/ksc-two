@@ -41,14 +41,18 @@ func (a *Article) List(page int, limit int) (schemas []schema.ArticleListRes) {
 			continue
 		}
 
+
 		articleSchema := schema.ArticleListRes{
-			SourceId: sourceId,
-			Name: v.Name,
-			TagSign: v.TagId,
-			TagName: v.TagName,
-			Images: images,
-			CreateTime: createTime,
+			schema.ArticleBase{
+				SourceId:   sourceId,
+				Name:       v.Name,
+				TagSign:    v.TagId,
+				TagName:    v.TagName,
+				Images:     images,
+				CreateTime: createTime,
+			},
 		}
+
 		schemas = append(schemas, articleSchema)
 	}
 	return
@@ -59,4 +63,8 @@ func (a *Article) Insert(data *entity.Article){
 	a.Db = common.GetDb()
 	success := a.Db.Create(&data)
 	fmt.Println(success)
+}
+
+func (a *Article) Info(schema.ArticleInfoRes){
+
 }
