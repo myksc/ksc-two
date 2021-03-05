@@ -19,6 +19,14 @@ const (
 	WEB_MAXBYTES     = 1 << 20
 )
 
+//探针
+type Probe struct {
+	health *gin.HandlerFunc
+	ready  *gin.HandlerFunc
+}
+
+var p Probe
+
 func RoutersInit(currDir string) {
 
 	//设置gin模式
@@ -55,6 +63,9 @@ func RoutersInit(currDir string) {
 	var xssMdlwr xss.XssMw
 	r.Use(xssMdlwr.RemoveXss())
 
+	r.GET("/health", HealthProbe())
+	r.GET("/ready", ReadyProbe())
+
 	initMoudle(r)
 
 	//创建HTTP服务
@@ -80,5 +91,26 @@ func initMoudle(app *gin.Engine){
 	userModule(app)
 	articleModule(app)
 }
+
+// HealthProbe 存活探针
+func HealthProbe() gin.HandlerFunc {
+	if p.health == nil {
+		return func(c *gin.Context) {
+			c.String(200, "succ")
+		}
+	}
+	return *p.health
+}
+
+// ReadyProbe 就绪探针
+func ReadyProbe() gin.HandlerFunc {
+	if p.ready == nil {
+		return func(c *gin.Context) {
+			c.String(200, "succ")
+		}
+	}
+	return *p.ready
+}
+
 
 
