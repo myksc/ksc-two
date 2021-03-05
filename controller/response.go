@@ -19,14 +19,14 @@ type DefaultResponse struct {
 	Data   interface{} `json:"data"`
 }
 
-//成功返回
+// Success 成功返回
 func Success(c *gin.Context, data gin.H) {
 	renderJson := DefaultResponse{0, "succ", data}
 	c.JSON(http.StatusOK, renderJson)
 	return
 }
 
-//失败返回
+// Fail 失败返回
 func Fail(c *gin.Context, err error) {
 	//Response(c, http.StatusOK, 500, data, msg)
 	var renderJson DefaultResponse
@@ -47,7 +47,7 @@ func Fail(c *gin.Context, err error) {
 	return
 }
 
-// 打印错误栈
+// StackLogger 打印错误栈
 func StackLogger(c *gin.Context, err error) {
 	if !strings.Contains(fmt.Sprintf("%+v", err), "\n") {
 		return
