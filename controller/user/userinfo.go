@@ -3,6 +3,7 @@ package user
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
+	"ksc/common"
 	"strconv"
 	"ksc/controller"
 )
@@ -22,7 +23,7 @@ func UserInfo(c *gin.Context) {
 	uid, err := strconv.Atoi(c.DefaultQuery("uid", "0"))
 
 	if err != nil {
-		controller.Fail(c, gin.H{}, "error")
+		controller.Fail(c, common.NewError(500, "参数错误", "参数错误"))
 		return
 	}
 
@@ -32,6 +33,6 @@ func UserInfo(c *gin.Context) {
 	//c.JSON(200, info)
 	controller.Success(c, gin.H{
 		"info":info,
-	}, "success")
+	})
 }
 

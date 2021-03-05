@@ -12,20 +12,12 @@ import (
 	"strings"
 )
 
-// default render
+// default response
 type DefaultResponse struct {
 	ErrNo  int         `json:"errNo"`
 	ErrMsg string      `json:"errMsg"`
 	Data   interface{} `json:"data"`
 }
-
-//func Response(c *gin.Context, httpStatus int, code int, data gin.H, msg string) {
-//	c.JSON(httpStatus, gin.H{
-//		"code": code,
-//		"data": data,
-//		"msg":  msg,
-//	})
-//}
 
 //成功返回
 func Success(c *gin.Context, data gin.H) {
@@ -56,14 +48,14 @@ func Fail(c *gin.Context, err error) {
 }
 
 // 打印错误栈
-func StackLogger(ctx *gin.Context, err error) {
+func StackLogger(c *gin.Context, err error) {
 	if !strings.Contains(fmt.Sprintf("%+v", err), "\n") {
 		return
 	}
 
 	var info []byte
-	if ctx != nil {
-		info, _ = json.Marshal(map[string]interface{}{"time": time.Now().Format("2006-01-02 15:04:05"), "level": "error", "module": "errorstack", "requestId": zlog.GetLogID(ctx)})
+	if c != nil {
+		info, _ = json.Marshal(map[string]interface{}{"time": time.Now().Format("2006-01-02 15:04:05"), "level": "error", "module": "errorstack", "requestId": common.GetLogID(c)})
 	} else {
 		info, _ = json.Marshal(map[string]interface{}{"time": time.Now().Format("2006-01-02 15:04:05"), "level": "error", "module": "errorstack"})
 	}

@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 	"ksc/common"
+	"ksc/middleware"
 	"ksc/util"
 	"net/http"
 	"time"
@@ -28,7 +29,14 @@ func RoutersInit(currDir string) {
 	}
 
 	//启动带有中间件的路由：Logger、Recovery 中间件
-	r := gin.Default()
+	//gin.Default()
+	r := gin.New()
+
+	//logger
+	r.Use(middleware.AccessLog())
+
+	//recover
+	r.Use(gin.Recovery())
 
 	//静态资源访问路径
 	staticDir := util.StringBuilder(util.StringBuilder(currDir, "public"))
