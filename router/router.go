@@ -111,6 +111,3 @@ func ReadyProbe() gin.HandlerFunc {
 	}
 	return *p.ready
 }
-
-
-
