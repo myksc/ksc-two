@@ -69,6 +69,6 @@ func (a *Article) Insert(data *entity.Article){
 	fmt.Println(success)
 }
 
-func (a *Article) Info(schema.ArticleInfoRes){
-
+func (a *Article) Info(sourceId int){
+	fmt.Println(sourceId)
 }
