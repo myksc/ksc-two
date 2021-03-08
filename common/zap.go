@@ -47,7 +47,7 @@ var logConfig = loggerConfig{
 	Path:     "./log",
 	RotateUnit:   "h",
 	RotateCount:  24,
-	RotateSwitch: false,
+	RotateSwitch: true,
 }
 
 func InitZap(){
