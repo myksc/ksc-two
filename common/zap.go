@@ -45,7 +45,7 @@ var logConfig = loggerConfig{
 	ZapLevel: zapcore.InfoLevel,
 	Log2File: true,
 	Path:     "./log",
-	RotateUnit:   "h",
+	RotateUnit:   "d",
 	RotateCount:  24,
 	RotateSwitch: true,
 }
