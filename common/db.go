@@ -43,6 +43,14 @@ func InitDb(){
 	return
 }
 
+// GetDb 获取db
 func GetDb() *gorm.DB {
 	return Ins
+}
+
+//CloseDb 关闭db
+func CloseDb(){
+	if Ins != nil {
+		Ins.Close()
+	}
 }
