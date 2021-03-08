@@ -49,6 +49,3 @@ func DecryptAES(src []byte) (destr string) {
 	destr = string(src[:])
 	return destr
 }
-
-
-

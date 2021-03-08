@@ -1,6 +1,7 @@
 package common
 
 import (
+	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"io"
@@ -22,7 +23,7 @@ const (
 
 // 业务日志输出logger
 var (
-	ServerLogger *zap.SugaredLogger
+	ServerLogger *zap.Logger
 	AccessLogger *zap.Logger
 )
 
@@ -55,9 +56,9 @@ func InitZap(){
 }
 
 // 业务日志(分为成功和失败)
-func GetLogger() (s *zap.SugaredLogger) {
+func GetLogger() (l *zap.Logger) {
 	if ServerLogger == nil {
-		ServerLogger = newLogger(LogNameServer).WithOptions(zap.AddCallerSkip(1)).Sugar()
+		ServerLogger = newLogger(LogNameServer).WithOptions(zap.AddCallerSkip(1))
 	}
 	return ServerLogger
 }
@@ -209,4 +210,38 @@ func (e entry) WithFields(f Fields) *zap.SugaredLogger {
 	}
 
 	return e.s.With(fields...)
+}
+
+func DebugLogger(ctx *gin.Context, msg string, fields ...zap.Field) {
+	zapLogger(ctx).Debug(msg, fields...)
+}
+func InfoLogger(ctx *gin.Context, msg string, fields ...zap.Field) {
+	zapLogger(ctx).Info(msg, fields...)
+}
+
+func WarnLogger(ctx *gin.Context, msg string, fields ...zap.Field) {
+	zapLogger(ctx).Warn(msg, fields...)
+}
+
+func ErrorLogger(ctx *gin.Context, msg string, fields ...zap.Field) {
+	zapLogger(ctx).Error(msg, fields...)
+}
+
+func PanicLogger(ctx *gin.Context, msg string, fields ...zap.Field) {
+	zapLogger(ctx).Panic(msg, fields...)
+}
+
+func FatalLogger(ctx *gin.Context, msg string, fields ...zap.Field) {
+	zapLogger(ctx).Fatal(msg, fields...)
+}
+
+func zapLogger(ctx *gin.Context) *zap.Logger {
+	m := GetLogger()
+	if ctx == nil {
+		return m
+	}
+	return m.With(
+		zap.String("logId", GetLogID(ctx)),
+		zap.String("requestId", GetRequestID(ctx)),
+	)
 }

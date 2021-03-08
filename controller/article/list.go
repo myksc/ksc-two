@@ -21,6 +21,7 @@ func List(c *gin.Context){
 
 func Info(c *gin.Context){
 	sourceId := c.DefaultQuery("sourceId", "")
+	panic("error")
 	if sourceId == "" {
 		controller.Fail(c, common.NewError(500, "参数错误", "参数错误"))
 	}
