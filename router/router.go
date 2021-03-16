@@ -44,7 +44,7 @@ func RoutersInit(currDir string) {
 	r.Use(middleware.AccessLog())
 
 	//recover
-	r.Use(gin.Recovery())
+	r.Use(middleware.Recovery())
 
 	//静态资源访问路径
 	staticDir := util.StringBuilder(util.StringBuilder(currDir, "public"))

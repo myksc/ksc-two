@@ -90,6 +90,8 @@ func newLogger(name string) *zap.Logger {
 			infoLevel)
 		zapCore = append(zapCore, c)
 
+
+		//warnfatal 需要记录到.wf文件中, 同时也会记录panic错误
 		if name != LogNameAccess {
 			c := zapcore.NewCore(
 				getEncoder(),
